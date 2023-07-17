@@ -20,7 +20,9 @@
     "egg-ci": "^1.11.0",
     "egg-mock": "^3.21.0",
     "eslint": "^5.13.0",
-    "eslint-config-egg": "^7.1.0"
+    "eslint-config-egg": "^7.1.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3"
   },
   "engines": {
     "node": ">=10.0.0"
@@ -35,7 +37,8 @@
     "cov": "egg-bin cov",
     "lint": "eslint .",
     "ci": "npm run lint && npm run cov",
-    "autod": "autod"
+    "autod": "autod",
+    "prepare": "husky install"
   },
   "ci": {
     "version": "10"
@@ -45,5 +48,8 @@
     "url": ""
   },
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "lint-staged": {
+    "*.js": "eslint --cache --fix"
+  }
 }
