@@ -7,7 +7,7 @@ const {
   createToken,
 } = require('../../utils/index');
 
-let Code = 0;
+let Code = null;
 class User extends Controller {
   // 登录
   async login() {
@@ -22,6 +22,7 @@ class User extends Controller {
     const data = await this.app.mysql.get('users', {
       username,
     });
+    // console.log(ctx.request.body);
     // 不存在返回不存在
     if (!data) {
       ctx.body = {
@@ -61,30 +62,38 @@ class User extends Controller {
       tel,
       code,
     } = ctx.request.body;
-    const data = await this.app.mysql.get('users', {
-      tel,
-    });
-    if (data) {
-      if (code === Code) {
-        const token = createToken({
-          ...data,
-        }, '24h');
-        ctx.body = {
-          code: 200,
-          message: '登录成功',
-          token, // 返回token,
-          data,
-        };
+    if (code !== null || code !== undefined || code !== '') {
+      if (Code != null) {
+        const data = await this.app.mysql.get('users', {
+          tel,
+        });
+        if (data && code === Code) {
+          const token = createToken({
+            ...data,
+          }, '24h');
+          Code = null;
+          ctx.body = {
+            code: 200,
+            message: '登录成功！',
+            token,
+            data,
+          };
+        } else {
+          ctx.body = {
+            code: 400,
+            message: '验证码输入错误！',
+          };
+        }
       } else {
         ctx.body = {
           code: 400,
-          message: '验证码错误',
+          message: '验证码已过期，请重新获取！',
         };
       }
     } else {
       ctx.body = {
         code: 400,
-        message: '该用户未注册',
+        message: '验证码不能为空！',
       };
     }
   }
@@ -99,18 +108,35 @@ class User extends Controller {
       tel,
     });
     // console.log(data);
-    if (data) {
-      Code = Math.random().toString().slice(2, 6);
+    if (!data) {
       ctx.body = {
-        code: 200,
-        message: '发送成功',
+        code: 401,
+        message: '用户不存在',
+      };
+    } else if (data.status === 0) {
+      ctx.body = {
+        code: 401,
+        message: '获取验证码失败',
         Code,
       };
     } else {
-      ctx.body = {
-        code: 400,
-        message: '获取验证码失败',
-      };
+      Code = '';
+      const random = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
+      for (let i = 0; i < 4; i++) {
+        const index = Math.floor(Math.random() * random.length);
+        Code += random[index];
+      }
+      if (Code) {
+        const timer = setTimeout(() => {
+          Code = null;
+          clearTimeout(timer);
+        }, 60000);
+        ctx.body = {
+          code: 200,
+          message: '获取验证码成功',
+          Code,
+        };
+      }
     }
 
   }

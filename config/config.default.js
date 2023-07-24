@@ -39,9 +39,9 @@ module.exports = appInfo => {
 
   config.oss = { // 这里需要的东西去自己的服务器里看，我用的阿里云
     client: {
-      accessKeyId: 'LTAI5tEdQ72LXzLuH1bnaB2J',
-      accessKeySecret: 'jeuDrwNPHKWAyBNyjl16R227v43ZMb',
-      bucket: 'oss-study-yzx',
+      accessKeyId: '',
+      accessKeySecret: '',
+      bucket: '',
       timeout: '60s',
       region: 'oss-cn-beijing',
     },
