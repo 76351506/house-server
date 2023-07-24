@@ -10,7 +10,7 @@ class Broker extends Controller {
     const {
       telName = '', state = '', // , pageSize = "10", pageCount = "1"
     } = ctx.query;
-    const data = await this.app.mysql.query(`SELECT * FROM brokers WHERE (name LIKE '%${telName}%' OR tel LIKE '%${telName}%') OR state LIKE '%${state}%' ORDER BY id DESC`); // limit ${(pageCount-1)*pageSize},${pageCount*pageSize}
+    const data = await this.app.mysql.query(`SELECT * FROM brokers WHERE (name LIKE '%${telName}%' or tel LIKE '%${telName}%') and state LIKE '%${state}%' ORDER BY id DESC`); // limit ${(pageCount-1)*pageSize},${pageCount*pageSize}
     ctx.body = {
       code: 200,
       data: data.length ? data : false,
@@ -39,11 +39,13 @@ class Broker extends Controller {
     const {
       content,
     } = ctx.request.body;
-    await this.app.mysql.update('brokers', content);
-    ctx.body = {
-      code: 200,
-      message: '修改成功',
-    };
+    const res = await this.app.mysql.update('brokers', content);
+    if (res.affectedRows) {
+      ctx.body = {
+        code: 200,
+        message: '修改成功',
+      };
+    }
   }
   // 添加经纪人状态接口
   async putBroker() {
@@ -54,11 +56,23 @@ class Broker extends Controller {
       name,
       tel,
       company,
+      created_at,
+      updated_at,
+      new_house,
+      second_hand_house,
+      renting,
+      state,
     } = ctx.request.body;
     await this.app.mysql.insert('brokers', {
       name,
       tel,
       company,
+      created_at,
+      updated_at,
+      new_house,
+      second_hand_house,
+      renting,
+      state,
     });
     ctx.body = {
       code: 200,

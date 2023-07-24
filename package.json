@@ -7,11 +7,15 @@
     "declarations": true
   },
   "dependencies": {
+    "ali-oss": "^6.17.1",
     "crypto": "^1.0.1",
     "egg": "^2.15.1",
     "egg-mysql": "^3.0.0",
+    "egg-oss": "^3.1.0",
     "egg-scripts": "^2.11.0",
     "jsonwebtoken": "^8.5.1",
+    "node-media-server": "^2.6.2",
+    "socket.io": "^4.7.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
